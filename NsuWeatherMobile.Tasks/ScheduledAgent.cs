@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using Microsoft.Phone.Scheduler;
 using Microsoft.Phone.Shell;
+using NsuWeatherMobile.Common;
 
 namespace NsuWeatherMobile.Tasks
 {
     public class ScheduledAgent : ScheduledTaskAgent
     {
-        private int index;
-
         /// <remarks>
         /// ScheduledAgent constructor, initializes the UnhandledException handler
         /// </remarks>
@@ -53,11 +46,11 @@ namespace NsuWeatherMobile.Tasks
             try
             {
                 UpdateMainTile();
-                ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromMinutes(10));
+                ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromSeconds(20));
             }
             catch (Exception)
             {
-                ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromSeconds(60));
+                ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromSeconds(10));
             }
 
             NotifyComplete();
@@ -71,10 +64,7 @@ namespace NsuWeatherMobile.Tasks
             {
                 FlipTileData tileData = new FlipTileData()
                                             {
-                                                BackContent =
-                                                    string.Format("Температура сейчас:{0}",
-                                                                  NsuWeatherMobile.Common.DataLoader.LoadTemperature
-                                                                      ().Result)
+                                                BackContent = string.Format("Температура сейчас:{0}", DataLoader.LoadTemperature().Result)
                                             };
 
                 mainTile.Update(tileData);

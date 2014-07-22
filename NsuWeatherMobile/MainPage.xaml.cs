@@ -1,29 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
+using Microsoft.Phone.Scheduler;
 
 namespace NsuWeatherMobile
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        // Constructor
+        private const string PeriodicTaskName = "LiveTileUpdater";
+        private const string TaskDescription = "NSU weather LiveTile agent";
+
         public MainPage()
         {
             InitializeComponent();
-
-            // Sample code to localize the ApplicationBar
-            //BuildLocalizedApplicationBar();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            StartPeriodicAgent();
+        }
+
+        private void StartPeriodicAgent()
+        {
+            PeriodicTask periodicTask = ScheduledActionService.Find(PeriodicTaskName) as PeriodicTask;
+            if (periodicTask == null)
+            {
+                periodicTask = new PeriodicTask(PeriodicTaskName);
+                periodicTask.Description = TaskDescription;
+
+                ScheduledActionService.Add(periodicTask);
+                ScheduledActionService.LaunchForTest(PeriodicTaskName, TimeSpan.FromSeconds(10));
+            }
         }
 
         // Sample code for building a localized ApplicationBar
