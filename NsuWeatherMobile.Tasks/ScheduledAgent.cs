@@ -46,14 +46,13 @@ namespace NsuWeatherMobile.Tasks
             try
             {
                 UpdateMainTile();
-                ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromSeconds(20));
+
+                NotifyComplete();
             }
             catch (Exception)
             {
-                ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromSeconds(10));
+               Abort();
             }
-
-            NotifyComplete();
         }
 
         public void UpdateMainTile()
@@ -62,7 +61,7 @@ namespace NsuWeatherMobile.Tasks
 
             if (null != mainTile)
             {
-                FlipTileData tileData = new FlipTileData()
+                FlipTileData tileData = new FlipTileData
                                             {
                                                 BackContent = string.Format("Температура сейчас:{0}", DataLoader.LoadTemperature().Result)
                                             };

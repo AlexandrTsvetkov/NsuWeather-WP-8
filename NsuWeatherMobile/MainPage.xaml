@@ -79,7 +79,7 @@
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="160" Margin="6,0,0,68" VerticalAlignment="Bottom" FontWeight="Thin" RenderTransformOrigin="0.239,0.503" Text="{Binding TemperatureAtNsu, Mode=TwoWay}" Visibility="{Binding IsVisibleTextBlock, Mode=TwoWay}"/>
             <TextBlock TextWrapping="Wrap" Margin="14,0,0,36" Foreground="#DE000000" FontSize="21.333" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontWeight="Thin" Text="{Binding RefreshTimeString, Mode=OneWay}" Visibility="{Binding IsVisibleTextBlock, Mode=TwoWay}" />
             <ProgressBar HorizontalAlignment="Center" Height="30" Margin="0,220,0,0" VerticalAlignment="Top" Width="456" Foreground="#DE299546" Background="#19FFFFFF" IsIndeterminate="True" Visibility="{Binding IsVisibleBar, Mode=OneWay}"/>
-            <TextBlock HorizontalAlignment="Left" Height="92" Margin="10,255,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="436" FontSize="21.333" FontFamily="Segoe WP" Visibility="{Binding IsVisibleErrorMessage, Mode=OneWay}">
+            <TextBlock HorizontalAlignment="Left" Height="92" Margin="10,255,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="436" FontSize="21.333" FontFamily="Segoe WP" Visibility="{Binding IsVisibleErrorMessage, Mode=OneWay}" Foreground="Gray">
             	<Run Text="Не удалось загрузить данные. Проверьте соединение с интернетом и повторите"/>
             	<Run Text=" попытку"/>
             </TextBlock>

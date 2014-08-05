@@ -24,14 +24,13 @@ namespace NsuWeatherMobile
         private void StartPeriodicAgent()
         {
             PeriodicTask periodicTask = ScheduledActionService.Find(PeriodicTaskName) as PeriodicTask;
-            if (periodicTask == null)
-            {
-                periodicTask = new PeriodicTask(PeriodicTaskName);
-                periodicTask.Description = TaskDescription;
 
-                ScheduledActionService.Add(periodicTask);
-                ScheduledActionService.LaunchForTest(PeriodicTaskName, TimeSpan.FromSeconds(10));
-            }
+            if (periodicTask != null)
+                ScheduledActionService.Remove(PeriodicTaskName);
+
+            periodicTask = new PeriodicTask(PeriodicTaskName) {Description = TaskDescription};
+
+            ScheduledActionService.Add(periodicTask);
         }
 
         // Sample code for building a localized ApplicationBar
