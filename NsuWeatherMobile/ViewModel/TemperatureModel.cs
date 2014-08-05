@@ -57,7 +57,7 @@ namespace NsuWeatherMobile.ViewModel
 
         public string TemperatureAtNsu
         {
-            get { return string.Format("{0}°", temperature); }
+            get { return string.Format("{0}С°", temperature); }
         }
 
         private bool IsLoad
