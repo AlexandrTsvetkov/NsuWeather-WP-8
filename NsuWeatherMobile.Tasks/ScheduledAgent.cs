@@ -63,7 +63,7 @@ namespace NsuWeatherMobile.Tasks
             {
                 FlipTileData tileData = new FlipTileData
                                             {
-                                                BackContent = string.Format("Температура сейчас:{0}", DataLoader.LoadTemperature().Result)
+                                                BackContent = string.Format("Около НГУ:{0}", DataLoader.LoadTemperature().Result)
                                             };
 
                 mainTile.Update(tileData);

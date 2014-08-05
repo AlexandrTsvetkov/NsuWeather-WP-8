@@ -24,7 +24,7 @@ namespace NsuWeatherMobile.Common
                                           Task<WebResponse>.Factory.FromAsync(webRequest.BeginGetResponse,
                                                                               webRequest.EndGetResponse, null);
 
-            XDocument xmlDoc = XDocument.Load(webResponse.GetResponseStream(), LoadOptions.PreserveWhitespace);
+            XDocument xmlDoc = XDocument.Load(webResponse.GetResponseStream());
             string stringTemperature = (from n in xmlDoc.Root.Elements() where n.Name == XmlNodeName select n.Value).FirstOrDefault();
             float temp = float.Parse(stringTemperature, NumberStyles.Any, NumberFormatInfo.InvariantInfo);
 
