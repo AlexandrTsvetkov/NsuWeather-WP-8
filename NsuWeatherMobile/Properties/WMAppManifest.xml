@@ -5,12 +5,10 @@
     <Language code="ru-RU" />
     <Language code="ru" />
   </Languages>
-  <App xmlns="" ProductID="{7d8bd07c-eca9-47aa-ba23-bbcf6cd5ed4f}" Title="Термометр НГУ" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Aleksandr Tsvetkov" Description="Sample description" Publisher="Aleksandr Tsvetkov" PublisherID="{b1ca4ac1-b577-4374-b6b7-ad52fa0e3415}">
+  <App xmlns="" ProductID="{7d8bd07c-eca9-47aa-ba23-bbcf6cd5ed4f}" Title="Термометр НГУ" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Alexandr Tsvetkov" Description="Sample description" Publisher="Alexandr Tsvetkov" PublisherID="{b1ca4ac1-b577-4374-b6b7-ad52fa0e3415}">
     <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
-      <Capability Name="ID_CAP_MEDIALIB_AUDIO" />
-      <Capability Name="ID_CAP_MEDIALIB_PLAYBACK" />
       <Capability Name="ID_CAP_SENSORS" />
       <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
     </Capabilities>

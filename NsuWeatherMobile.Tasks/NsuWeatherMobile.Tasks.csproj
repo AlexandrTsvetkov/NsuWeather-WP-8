@@ -84,6 +84,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Libs\ToolStackCRCLib.cs" />
+    <Compile Include="Libs\ToolStackPNGWriterLib.cs" />
+    <Compile Include="Libs\ToolStackPNGWriterWBext.cs" />
     <Compile Include="ScheduledAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

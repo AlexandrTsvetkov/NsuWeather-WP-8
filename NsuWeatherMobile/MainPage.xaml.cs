@@ -1,7 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.IsolatedStorage;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Scheduler;
+using Microsoft.Phone.Shell;
+using NsuWeatherMobile.Common;
 
 namespace NsuWeatherMobile
 {
@@ -9,6 +19,8 @@ namespace NsuWeatherMobile
     {
         private const string PeriodicTaskName = "LiveTileUpdater";
         private const string TaskDescription = "NSU weather LiveTile agent";
+
+        private Random random = new Random();
 
         public MainPage()
         {
@@ -23,14 +35,19 @@ namespace NsuWeatherMobile
 
         private void StartPeriodicAgent()
         {
-            PeriodicTask periodicTask = ScheduledActionService.Find(PeriodicTaskName) as PeriodicTask;
+            try
+            {
+                var periodicTask = ScheduledActionService.Find(PeriodicTaskName) as PeriodicTask;
 
-            if (periodicTask != null)
-                ScheduledActionService.Remove(PeriodicTaskName);
+                if (periodicTask != null)
+                    ScheduledActionService.Remove(PeriodicTaskName);
 
-            periodicTask = new PeriodicTask(PeriodicTaskName) {Description = TaskDescription};
+                periodicTask = new PeriodicTask(PeriodicTaskName) {Description = TaskDescription};
 
-            ScheduledActionService.Add(periodicTask);
+                ScheduledActionService.Add(periodicTask);
+            }
+            catch
+            {}
         }
 
         // Sample code for building a localized ApplicationBar

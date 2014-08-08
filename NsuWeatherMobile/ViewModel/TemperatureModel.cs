@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
+using NsuWeatherMobile.Common;
 
 namespace NsuWeatherMobile.ViewModel
 {
@@ -18,7 +19,7 @@ namespace NsuWeatherMobile.ViewModel
             IsLoad = false;
             try
             {
-                Temperature = await Common.DataLoader.LoadTemperature();
+                Temperature = (float) Math.Round(await DataLoader.LoadTemperature(), 1);
                 UpdateTime = DateTime.Now;
                 IsLoad = true;
             }
