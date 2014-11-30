@@ -11,6 +11,7 @@ namespace NsuWeatherMobile.Common
     public class DataLoader
     {
         private const string NsuWeatherUrl = "http://weather.nsu.ru/weather_brief.xml";
+
         private const string XmlNodeName = "current";
 
         private static Random randomKey = new Random();

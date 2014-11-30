@@ -7,19 +7,20 @@ namespace NsuWeatherMobile.ViewModel
 {
     public class TemperatureModel : INotifyPropertyChanged 
     {
-        private float temperature;
+        private int temperature;
         private bool isLoaded;
-        private UpdateTemperatureCommand updateTemperatureCommand;
-        private DateTime updateTime;
         private bool isError;
+        private DateTime updateTime;
 
+        private UpdateTemperatureCommand updateTemperatureCommand;
+        
         public async void UpdateTemperature()
         {
             IsError = false;
             IsLoad = false;
             try
             {
-                Temperature = (float) Math.Round(await DataLoader.LoadTemperature(), 1);
+                Temperature = (int) Math.Round(await DataLoader.LoadTemperature(), 0);
                 UpdateTime = DateTime.Now;
                 IsLoad = true;
             }
@@ -31,7 +32,7 @@ namespace NsuWeatherMobile.ViewModel
 
         }
 
-        public float Temperature
+        public int Temperature
         {
             get { return temperature; }
             set
@@ -70,27 +71,6 @@ namespace NsuWeatherMobile.ViewModel
                 OnPropertyChanged("IsVisibleBar");
             }
         }
-            
-
-        public string IsVisibleTextBlock
-        {
-            get 
-            {
-                if (isLoaded && !isError)
-                    return "Visible";
-                return "Collapsed";
-            }
-        }
-
-        public string IsVisibleBar
-        {
-            get
-            {
-                if (!isLoaded && !isError)
-                    return "Visible";
-                return "Collapsed";
-            }
-        }
 
         public bool IsError
         {
@@ -101,13 +81,27 @@ namespace NsuWeatherMobile.ViewModel
             }
         }
 
-        public string IsVisibleErrorMessage
+        public bool IsVisibleTextBlock
+        {
+            get 
+            {
+                return isLoaded && !isError;
+            }
+        }
+
+        public bool IsVisibleBar
         {
             get
             {
-                if (!isError)
-                    return "Collapsed";
-                return "Visible";
+                return !isLoaded && !isError;
+            }
+        }
+
+        public bool IsVisibleErrorMessage
+        {
+            get
+            {
+                return isError;
             }
         }
 

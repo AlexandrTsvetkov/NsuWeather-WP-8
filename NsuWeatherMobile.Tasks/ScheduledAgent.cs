@@ -58,6 +58,7 @@ namespace NsuWeatherMobile.Tasks
                 {
                     temperature = (int) Math.Round(await DataLoader.LoadTemperature(), 0);
 
+                    GenerateTileImage(Constants.SmallTileSize, Constants.SmallTileSize);
                     GenerateTileImage(Constants.TileSize, Constants.TileSize);
                     GenerateTileImage(Constants.WideTileSize, Constants.TileSize);
 
@@ -75,7 +76,6 @@ namespace NsuWeatherMobile.Tasks
         private void GenerateTileImage(int width, int height)
         {
             var bitmap = new WriteableBitmap(width, height);
-
             var grid = new Grid {Height = bitmap.PixelHeight, Width = bitmap.PixelWidth};
 
             var textBlock = new TextBlock
@@ -84,7 +84,7 @@ namespace NsuWeatherMobile.Tasks
                                     VerticalAlignment = VerticalAlignment.Center,
                                     HorizontalAlignment = HorizontalAlignment.Center,
                                     Foreground = new SolidColorBrush(Colors.White),
-                                    FontSize = 150
+                                    FontSize = height / 2
                                 };
 
             grid.Children.Add(textBlock);
@@ -95,7 +95,21 @@ namespace NsuWeatherMobile.Tasks
 
             using (var isf = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                var filePath = string.Format("/Shared/ShellContent/{0}.jpg", width == Constants.WideTileSize ? "tileWide" : "tile");
+                var fileName = string.Empty;
+                switch (width)
+                {
+                    case Constants.SmallTileSize:
+                        fileName = "tileSmall";
+                        break;
+                    case Constants.TileSize:
+                        fileName = "tile";
+                        break;
+                    case Constants.WideTileSize:
+                        fileName = "tileWide";
+                        break;
+                }
+
+                var filePath = string.Format("/Shared/ShellContent/{0}.jpg", fileName);
 
                 using (var stream = isf.OpenFile(filePath, FileMode.Create))
                 {
@@ -112,8 +126,9 @@ namespace NsuWeatherMobile.Tasks
             {
                 FlipTileData tileData = new FlipTileData
                                             {
-                                                BackgroundImage = new Uri("isostore:" + "/Shared/ShellContent/tile.jpg", UriKind.Absolute),
-                                                WideBackgroundImage = new Uri("isostore:" + "/Shared/ShellContent/tileWide.jpg", UriKind.Absolute)
+                                                BackgroundImage = new Uri("isostore:/Shared/ShellContent/tile.jpg", UriKind.Absolute),
+                                                WideBackgroundImage = new Uri("isostore:/Shared/ShellContent/tileWide.jpg", UriKind.Absolute),
+                                                SmallBackgroundImage = new Uri("isostore:/Shared/ShellContent/tileSmall.jpg", UriKind.Absolute)
                                             };
 
                 mainTile.Update(tileData);
