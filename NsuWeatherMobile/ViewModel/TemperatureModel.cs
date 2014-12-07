@@ -7,76 +7,55 @@ namespace NsuWeatherMobile.ViewModel
 {
     public class TemperatureModel : INotifyPropertyChanged 
     {
-        private int temperature;
-        private bool isLoaded;
-        private bool isError;
-        private DateTime updateTime;
-
-        private UpdateTemperatureCommand updateTemperatureCommand;
-        
-        public async void UpdateTemperature()
-        {
-            IsError = false;
-            IsLoad = false;
-            try
-            {
-                Temperature = (int) Math.Round(await DataLoader.LoadTemperature(), 0);
-                UpdateTime = DateTime.Now;
-                IsLoad = true;
-            }
-            catch (Exception)
-            {
-                IsError = true;
-                IsLoad = false;
-            }
-
-        }
-
+        private int _temperature;
         public int Temperature
         {
-            get { return temperature; }
+            get { return _temperature; }
             set
             {
-                temperature = value;
+                _temperature = value;
                 OnPropertyChanged("TemperatureAtNsu");
             }
         }
 
+        private DateTime _updateTime;
         public DateTime UpdateTime
         {
-            get { return updateTime; }
+            get { return _updateTime; }
             set
             {
-                updateTime = value;
+                _updateTime = value;
                 OnPropertyChanged("RefreshTimeString");
             }
         }
 
         public string RefreshTimeString
         {
-            get { return string.Format("Обновлено в {0}", updateTime.ToShortTimeString()); }
+            get { return string.Format("Обновлено в {0}", _updateTime.ToShortTimeString()); }
         }
 
         public string TemperatureAtNsu
         {
-            get { return string.Format("{0}°", temperature); }
+            get { return string.Format("{0}°", _temperature); }
         }
 
+        private bool _isLoaded;
         private bool IsLoad
         {
             set
             {
-                isLoaded = value;
+                _isLoaded = value;
                 OnPropertyChanged("IsVisibleTextBlock");
                 OnPropertyChanged("IsVisibleBar");
             }
         }
 
+        private bool _isError;
         public bool IsError
         {
             set
             {
-                isError = value;
+                _isError = value;
                 OnPropertyChanged("IsVisibleErrorMessage");
             }
         }
@@ -85,7 +64,7 @@ namespace NsuWeatherMobile.ViewModel
         {
             get 
             {
-                return isLoaded && !isError;
+                return _isLoaded && !_isError;
             }
         }
 
@@ -93,7 +72,7 @@ namespace NsuWeatherMobile.ViewModel
         {
             get
             {
-                return !isLoaded && !isError;
+                return !_isLoaded && !_isError;
             }
         }
 
@@ -101,13 +80,32 @@ namespace NsuWeatherMobile.ViewModel
         {
             get
             {
-                return isError;
+                return _isError;
             }
         }
 
+        private UpdateTemperatureCommand _updateTemperatureCommand;
         public UpdateTemperatureCommand UpdateCommand
         {
-            get { return updateTemperatureCommand ?? (updateTemperatureCommand = new UpdateTemperatureCommand(UpdateTemperature)); }
+            get { return _updateTemperatureCommand ?? (_updateTemperatureCommand = new UpdateTemperatureCommand(UpdateTemperature)); }
+        }
+
+        public async void UpdateTemperature()
+        {
+            IsError = false;
+            IsLoad = false;
+
+            try
+            {
+                Temperature = (int)Math.Round(await DataLoader.LoadTemperature(), 0);
+                UpdateTime = DateTime.Now;
+                IsLoad = true;
+            }
+            catch (Exception)
+            {
+                IsError = true;
+                IsLoad = false;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

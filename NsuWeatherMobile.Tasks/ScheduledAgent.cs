@@ -16,7 +16,7 @@ namespace NsuWeatherMobile.Tasks
 {
     public class ScheduledAgent : ScheduledTaskAgent
     {
-        private int temperature;
+        private int _temperature;
 
         /// <remarks>
         /// ScheduledAgent constructor, initializes the UnhandledException handler
@@ -56,7 +56,7 @@ namespace NsuWeatherMobile.Tasks
             {
                 try
                 {
-                    temperature = (int) Math.Round(await DataLoader.LoadTemperature(), 0);
+                    _temperature = (int) Math.Round(await DataLoader.LoadTemperature(), 0);
 
                     GenerateTileImage(Constants.SmallTileSize, Constants.SmallTileSize);
                     GenerateTileImage(Constants.TileSize, Constants.TileSize);
@@ -80,7 +80,7 @@ namespace NsuWeatherMobile.Tasks
 
             var textBlock = new TextBlock
                                 {
-                                    Text = string.Format("{0}°", temperature),
+                                    Text = string.Format("{0}°", _temperature),
                                     VerticalAlignment = VerticalAlignment.Center,
                                     HorizontalAlignment = HorizontalAlignment.Center,
                                     Foreground = new SolidColorBrush(Colors.White),
