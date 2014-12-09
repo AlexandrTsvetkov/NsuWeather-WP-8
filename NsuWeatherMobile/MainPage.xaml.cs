@@ -20,8 +20,6 @@ namespace NsuWeatherMobile
         private const string PeriodicTaskName = "LiveTileUpdater";
         private const string TaskDescription = "NSU weather LiveTile agent";
 
-        private Random random = new Random();
-
         public MainPage()
         {
             InitializeComponent();

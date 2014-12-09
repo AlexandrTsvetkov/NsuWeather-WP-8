@@ -56,7 +56,8 @@ namespace NsuWeatherMobile.Tasks
             {
                 try
                 {
-                    _temperature = (int) Math.Round(await DataLoader.LoadTemperature(), 0);
+                    var weather = await DataLoader.LoadTemperature();
+                    _temperature = (int) Math.Round(weather.Current, 0);
 
                     GenerateTileImage(Constants.SmallTileSize, Constants.SmallTileSize);
                     GenerateTileImage(Constants.TileSize, Constants.TileSize);

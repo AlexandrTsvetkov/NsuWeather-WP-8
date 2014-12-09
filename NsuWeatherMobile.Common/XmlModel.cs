@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace NsuWeatherMobile.Common
@@ -17,16 +13,24 @@ namespace NsuWeatherMobile.Common
         public float Current;
 
         [XmlElement("graph")]
-        public List<GraphNode> GraphList = new List<GraphNode>();
+        public Graph Graphic;
     }
 
+    [XmlRoot("graph")]
+    public class Graph
+    {
+        [XmlElement("temp")]
+        public List<Temperature> TemperatureList = new List<Temperature>();
+    }
+
+
     [XmlRoot("temp")]
-    public class GraphNode
+    public class Temperature
     {
         [XmlAttribute("timestamp")]
-        public int Timestamp;
+        public long Timestamp;
 
         [XmlText]
-        public float Temperature;
+        public float Value;
     }
 }

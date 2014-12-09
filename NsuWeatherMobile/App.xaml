@@ -9,6 +9,7 @@
     <Application.Resources>
         <local:LocalizedStrings x:Key="LocalizedStrings"/>
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:TemperatureToGraphConverter x:Key="TemperatureToGraphConverter" />
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

@@ -13,7 +13,8 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="True" Foreground="#DE000000">
+    shell:SystemTray.IsVisible="True" Foreground="#DE000000"
+    xmlns:sparrow="clr-namespace:Sparrow.Chart;assembly=Sparrow.Chart.WP8.45">
     <phone:PhoneApplicationPage.DataContext>
         <ViewModel:TemperatureModel/>
     </phone:PhoneApplicationPage.DataContext>
@@ -76,10 +77,19 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="10,0,14,0">
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="160" Margin="6,0,0,68" VerticalAlignment="Bottom" FontWeight="Thin" RenderTransformOrigin="0.239,0.503" Text="{Binding TemperatureAtNsu, Mode=TwoWay}" Visibility="{Binding IsVisibleTextBlock, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <sparrow:SparrowChart Height="300" VerticalAlignment="Top" Visibility="{Binding IsVisibleTextBlock, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <sparrow:SparrowChart.XAxis>
+                    <sparrow:DateTimeXAxis StringFormat="d-MMM HH:mm" />
+                </sparrow:SparrowChart.XAxis>
+                <sparrow:SparrowChart.YAxis>
+                    <sparrow:LinearYAxis StringFormat="0°" />
+                </sparrow:SparrowChart.YAxis>
+                <sparrow:LineSeries PointsSource="{Binding TemperatureCollection, Converter={StaticResource TemperatureToGraphConverter}}" XPath="Time" YPath="Value" Stroke="#DE299546" StrokeThickness="5" />
+            </sparrow:SparrowChart>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="160" Margin="6,0,0,68" VerticalAlignment="Bottom" FontWeight="Thin" RenderTransformOrigin="0.239,0.503" Text="{Binding TemperatureAtNsu, Mode=TwoWay}" Visibility="{Binding IsVisibleTextBlock, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBlock TextWrapping="Wrap" Margin="14,0,0,36" Foreground="#DE000000" FontSize="21.333" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontWeight="Thin" Text="{Binding RefreshTimeString, Mode=OneWay}" Visibility="{Binding IsVisibleTextBlock, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <ProgressBar HorizontalAlignment="Center" Height="30" Margin="0,220,0,0" VerticalAlignment="Top" Width="456" Foreground="#DE299546" Background="#19FFFFFF" IsIndeterminate="True" Visibility="{Binding IsVisibleBar, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-            <TextBlock HorizontalAlignment="Left" Height="92" Margin="10,255,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="436" FontSize="21.333" FontFamily="Segoe WP" Visibility="{Binding IsVisibleErrorMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="Gray">
+            <ProgressBar HorizontalAlignment="Center" Height="30" Margin="0,220,0,0" VerticalAlignment="Top" Width="456" Foreground="#DE299546" Background="#19FFFFFF" IsIndeterminate="True" Visibility="{Binding IsVisibleBar, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <TextBlock HorizontalAlignment="Left" Height="92" Margin="10,255,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="436" FontSize="21.333" FontFamily="Segoe WP" Visibility="{Binding IsVisibleErrorMessage, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="Gray">
             	<Run Text="Не удалось загрузить данные. Проверьте соединение с интернетом и повторите"/>
             	<Run Text=" попытку"/>
             </TextBlock>

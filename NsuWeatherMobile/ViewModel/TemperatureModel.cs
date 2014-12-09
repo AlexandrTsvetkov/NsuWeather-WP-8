@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using NsuWeatherMobile.Common;
@@ -60,6 +61,17 @@ namespace NsuWeatherMobile.ViewModel
             }
         }
 
+        private IList<Temperature> _temperatureCollection;
+        public IList<Temperature> TemperatureCollection
+        {
+            get { return _temperatureCollection; }
+            set
+            {
+                _temperatureCollection = value;
+                OnPropertyChanged("TemperatureCollection");
+            }
+        }
+
         public bool IsVisibleTextBlock
         {
             get 
@@ -97,7 +109,10 @@ namespace NsuWeatherMobile.ViewModel
 
             try
             {
-                Temperature = (int)Math.Round(await DataLoader.LoadTemperature(), 0);
+                var weatherData = await DataLoader.LoadTemperatureWithGraph();
+                Temperature = (int) Math.Round(weatherData.Current, 0);
+                TemperatureCollection = weatherData.Graphic.TemperatureList;
+
                 UpdateTime = DateTime.Now;
                 IsLoad = true;
             }
@@ -137,5 +152,12 @@ namespace NsuWeatherMobile.ViewModel
         }
 
         public event EventHandler CanExecuteChanged;
+    }
+
+    public class GraphicModel
+    {
+        public DateTime Time { get; set; }
+
+        public int Value { get; set; }
     }
 }
