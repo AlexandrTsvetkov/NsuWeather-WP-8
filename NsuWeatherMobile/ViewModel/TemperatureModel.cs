@@ -1,13 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
+
 using NsuWeatherMobile.Common;
+using NsuWeatherMobile.Common.Extensions;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace NsuWeatherMobile.ViewModel
 {
     public class TemperatureModel : INotifyPropertyChanged 
     {
+        public class GraphModel
+        {
+            private int? _minValue;
+            public int MinValue
+            {
+                get
+                {
+                    return _minValue ?? -50;
+                }
+                set { /*_minValue = value;*/ }
+            }
+
+            private int? _maxValue;
+            public int MaxValue
+            {
+                get
+                {
+                    return _maxValue ?? 50;
+                }
+                set { /*_maxValue = value;*/ }
+            }
+
+            public IList<Temperature> TemperatureCollection { get; set; }
+        }
+
+        #region Properties
         private int _temperature;
         public int Temperature
         {
@@ -61,14 +93,25 @@ namespace NsuWeatherMobile.ViewModel
             }
         }
 
-        private IList<Temperature> _temperatureCollection;
-        public IList<Temperature> TemperatureCollection
+        private GraphModel _graph;
+        public GraphModel Graph
         {
-            get { return _temperatureCollection; }
+            get { return _graph; }
             set
             {
-                _temperatureCollection = value;
-                OnPropertyChanged("TemperatureCollection");
+                _graph = value;
+                OnPropertyChanged("Graph");
+            }
+        }
+
+        private PlotModel _plotModel;
+        public PlotModel PlotModel
+        {
+            get { return _plotModel; }
+            set
+            {
+                _plotModel = value;
+                OnPropertyChanged("PlotModel");
             }
         }
 
@@ -101,8 +144,14 @@ namespace NsuWeatherMobile.ViewModel
         {
             get { return _updateTemperatureCommand ?? (_updateTemperatureCommand = new UpdateTemperatureCommand(UpdateTemperature)); }
         }
+        #endregion
 
-        public async void UpdateTemperature()
+        public TemperatureModel()
+        {
+            UpdateTemperature();
+        }
+
+        private async void UpdateTemperature()
         {
             IsError = false;
             IsLoad = false;
@@ -111,7 +160,14 @@ namespace NsuWeatherMobile.ViewModel
             {
                 var weatherData = await DataLoader.LoadTemperatureWithGraph();
                 Temperature = (int) Math.Round(weatherData.Current, 0);
-                TemperatureCollection = weatherData.Graphic.TemperatureList;
+                Graph = new GraphModel
+                {
+                    TemperatureCollection = weatherData.Graphic.TemperatureList,
+                    MinValue = (int) weatherData.Graphic.TemperatureList.Max(x => x.Value),
+                    MaxValue = (int) weatherData.Graphic.TemperatureList.Min(x => x.Value)
+                };
+
+                PlotModel = GeneratePlotModel(weatherData.Graphic.TemperatureList);
 
                 UpdateTime = DateTime.Now;
                 IsLoad = true;
@@ -121,6 +177,50 @@ namespace NsuWeatherMobile.ViewModel
                 IsError = true;
                 IsLoad = false;
             }
+        }
+
+        private PlotModel GeneratePlotModel(IList<Temperature> temperatureList)
+        {
+            var model = new PlotModel();
+            model.Axes.Add(new DateTimeAxis
+            {
+                TickStyle = TickStyle.Inside,
+                //MajorGridlineStyle = LineStyle.Dash,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                StringFormat = "d-MMM",
+            });
+            model.Axes.Add(new LinearAxis
+            {
+                TickStyle = TickStyle.Inside,
+                //MajorGridlineStyle = LineStyle.Dash,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                StringFormat = "0°",
+                FontSize = 20
+            });
+            model.PlotAreaBorderColor = OxyColors.Transparent;
+            var areaSeries = new AreaSeries();
+
+            for (int i = temperatureList.Count - 1; i >= 0; i -= 10)
+            {
+                areaSeries.Points.Add(new DataPoint
+                {
+                    X = DateTimeAxis.ToDouble(temperatureList[i].Timestamp.FromUnixEpochToDateTime()),
+                    Y = (int)Math.Round(temperatureList[i].Value, 0)
+                });
+
+            }
+
+            areaSeries.Color = OxyColor.FromArgb(255, 41, 149, 70);
+            areaSeries.Fill = OxyColor.FromArgb(87, 41, 149, 70);
+
+            areaSeries.Points2.Add(new DataPoint(areaSeries.Points[0].X, 0));
+            areaSeries.Points2.Add(new DataPoint(areaSeries.Points.Last().X, 0));
+            areaSeries.Color2 = OxyColor.FromRgb(255, 255, 255);
+
+            model.Series.Add(areaSeries);
+            return model;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
