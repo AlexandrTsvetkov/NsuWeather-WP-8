@@ -1,14 +1,37 @@
 ﻿<Page
-    x:Class="WeatherNsuUniversal.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WeatherNsuUniversal"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    xmlns:ViewModels="using:WeatherNsuUniversal.ViewModels"
+    x:Class="WeatherNsuUniversal.MainPage"
+    xmlns:oxy="using:OxyPlot.WindowsUniversal"
+    mc:Ignorable="d" 
+    Background="{StaticResource MainApplicationColorBrush}">
 
-    <Grid>
+	<Page.DataContext>
+		<ViewModels:TemperatureViewModel/>
+	</Page.DataContext>
 
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Column="1" Margin="0,148,0,0" TextWrapping="Wrap" FontSize="96" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Temperature}" VerticalAlignment="Top"/>
+        <TextBlock Grid.Column="2" Margin="0,148,0,0" TextWrapping="Wrap" Text="°" FontSize="96" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Center" Margin="0,24,0,0" TextWrapping="Wrap" Text="СЕЙЧАС" VerticalAlignment="Top" FontSize="20" Grid.Row="1"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,148,93.667,0" TextWrapping="Wrap" Text="{Binding Sign, Mode=OneWay}" VerticalAlignment="Top" FontSize="96" Grid.Column="1"/>
+        <TextBlock Grid.ColumnSpan="3" HorizontalAlignment="Center" Margin="0,28,0,0" TextWrapping="Wrap" Text="ПРОГНОЗ ГРАФИК" VerticalAlignment="Top" FontSize="16" FontFamily="Global User Interface"/>
+        <oxy:PlotView HorizontalAlignment="Center" Grid.ColumnSpan="3" VerticalAlignment="Top" BorderThickness="0,150,0,0" Height="292" Margin="10,73.833,10,0" Width="380" Grid.Row="1" />
+        
     </Grid>
 </Page>

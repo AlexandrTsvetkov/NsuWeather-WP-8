@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WeatherNsuUniversal.Common;
 
 namespace WeatherNsuUniversal.ViewModels
 {
-    public class TemperatureViewModel : INotifyPropertyChanged 
+    public class TemperatureViewModel : INotifyPropertyChanged
     {
+        public string Sign
+        {
+            get { return _temperature < 0 ? "–" : string.Empty; }
+        }
+
         private int _temperature;
         public int Temperature
         {
-            get { return _temperature; }
+            get { return Math.Abs(_temperature); }
             set
             {
                 _temperature = value;
-                OnPropertyChanged("TemperatureAtNsu");
+                OnPropertyChanged();
             }
         }
 
@@ -32,12 +38,7 @@ namespace WeatherNsuUniversal.ViewModels
 
         public string RefreshTimeString
         {
-            get { return string.Format("Обновлено в {0}", _updateTime.ToString()); }
-        }
-
-        public string TemperatureAtNsu
-        {
-            get { return string.Format("{0}°", _temperature); }
+            get { return string.Format("Обновлено в {0}", _updateTime); }
         }
 
         private bool _isLoaded;
@@ -91,6 +92,11 @@ namespace WeatherNsuUniversal.ViewModels
             get { return _updateTemperatureCommand ?? (_updateTemperatureCommand = new UpdateTemperatureCommand(UpdateTemperature)); }
         }
 
+        public TemperatureViewModel()
+        {
+            UpdateTemperature();
+        }
+
         public async void UpdateTemperature()
         {
             IsError = false;
@@ -113,7 +119,7 @@ namespace WeatherNsuUniversal.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
