@@ -119,6 +119,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="packages.config" />
     <None Include="WeatherNsuUniversal.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +133,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="OxyPlot, Version=2015.1.690.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OxyPlot.Core.2015.1.690-alpha\lib\portable-net4+sl4+wp71+win8+wpa81\OxyPlot.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsUniversal, Version=2015.1.690.0, Culture=neutral, PublicKeyToken=8db7042d1d71c4e0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OxyPlot.WindowsUniversal.2015.1.690-alpha\lib\portable-windows8+wpa81\OxyPlot.WindowsUniversal\OxyPlot.WindowsUniversal.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
