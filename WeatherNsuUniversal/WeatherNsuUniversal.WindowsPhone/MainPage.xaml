@@ -5,33 +5,116 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ViewModels="using:WeatherNsuUniversal.ViewModels"
-    x:Class="WeatherNsuUniversal.MainPage"
     xmlns:oxy="using:OxyPlot.WindowsUniversal"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Media="using:Microsoft.Xaml.Interactions.Media"
+    x:Class="WeatherNsuUniversal.MainPage"
     mc:Ignorable="d" 
     Background="{StaticResource MainApplicationColorBrush}">
+	<Page.BottomAppBar>
+        <CommandBar Background="#B2FFFFFF" Foreground="{StaticResource MainApplicationColorBrush}">
+			<CommandBar.SecondaryCommands>
+				<AppBarButton Label="настройки"/>
+			</CommandBar.SecondaryCommands>
+			<AppBarButton Label="обновить" Icon="Refresh" Foreground="{x:Null}"/>
+		</CommandBar>
+	</Page.BottomAppBar>
 
 	<Page.DataContext>
 		<ViewModels:TemperatureViewModel/>
 	</Page.DataContext>
 
-	<Grid>
-		<Grid.ColumnDefinitions>
+    <Grid x:Name="grid">
+    	<Interactivity:Interaction.Behaviors>
+    		<Core:EventTriggerBehavior>
+    			<Core:GoToStateAction StateName="ForecastState"/>
+    		</Core:EventTriggerBehavior>
+    	</Interactivity:Interaction.Behaviors>
+        
+    	<VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+
+                <VisualState x:Name="ForecastState">
+                    <Storyboard>
+                        <DoubleAnimation Duration="0:0:0.5" To="{Binding ActualWidth, ElementName=grid}" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="plotView" d:IsOptimized="True">
+                            <DoubleAnimation.EasingFunction>
+                                <CircleEase EasingMode="EaseInOut"></CircleEase>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                    </VisualState>
+
+                <VisualState x:Name="ChartState">
+            		<Storyboard>
+            			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="path">
+            				<DiscreteObjectKeyFrame KeyTime="0">
+            					<DiscreteObjectKeyFrame.Value>
+                                    <x:Int32>2</x:Int32>
+            					</DiscreteObjectKeyFrame.Value>
+            				</DiscreteObjectKeyFrame>
+            			</ObjectAnimationUsingKeyFrames>
+                        <DoubleAnimation Duration="0:0:0.5" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="plotView" d:IsOptimized="True">
+                            <DoubleAnimation.EasingFunction>
+                                <CircleEase EasingMode="EaseInOut"></CircleEase>
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>    
+                    </Storyboard>
+            	</VisualState>
+            </VisualStateGroup>
+    	</VisualStateManager.VisualStateGroups>
+        
+        <Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
         
-        <Grid.RowDefinitions>
+		<Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+		</Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="1" Margin="0,148,0,0" TextWrapping="Wrap" FontSize="96" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Temperature}" VerticalAlignment="Top"/>
-        <TextBlock Grid.Column="2" Margin="0,148,0,0" TextWrapping="Wrap" Text="°" FontSize="96" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center"/>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Center" Margin="0,24,0,0" TextWrapping="Wrap" Text="СЕЙЧАС" VerticalAlignment="Top" FontSize="20" Grid.Row="1"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,148,93.667,0" TextWrapping="Wrap" Text="{Binding Sign, Mode=OneWay}" VerticalAlignment="Top" FontSize="96" Grid.Column="1"/>
-        <TextBlock Grid.ColumnSpan="3" HorizontalAlignment="Center" Margin="0,28,0,0" TextWrapping="Wrap" Text="ПРОГНОЗ ГРАФИК" VerticalAlignment="Top" FontSize="16" FontFamily="Global User Interface"/>
-        <oxy:PlotView HorizontalAlignment="Center" Grid.ColumnSpan="3" VerticalAlignment="Top" BorderThickness="0,150,0,0" Height="292" Margin="10,73.833,10,0" Width="380" Grid.Row="1" />
+		<Grid HorizontalAlignment="Center" Grid.ColumnSpan="3" VerticalAlignment="Top" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+            	<ColumnDefinition Width="Auto"/>
+            	<ColumnDefinition Width="20"/>
+            	<ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <Grid.RowDefinitions>
+            	<RowDefinition Height="Auto"/>
+            	<RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+			<TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="ПРОГНОЗ" VerticalAlignment="Top" FontSize="16" Height="40">
+				<Interactivity:Interaction.Behaviors>
+					<Core:EventTriggerBehavior EventName="Tapped">
+						<Core:GoToStateAction StateName="ForecastState"/>
+					</Core:EventTriggerBehavior>
+				</Interactivity:Interaction.Behaviors>
+			</TextBlock>
+			<TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="ГРАФИК" VerticalAlignment="Top" FontSize="16" Margin="0" Grid.Column="2" Height="40">
+				<Interactivity:Interaction.Behaviors>
+					<Core:EventTriggerBehavior EventName="Tapped">
+						<Core:GoToStateAction StateName="ChartState"/>
+					</Core:EventTriggerBehavior>
+				</Interactivity:Interaction.Behaviors>
+			</TextBlock>
+			<Path x:Name="path" Data="M70,98.3333 L110,98.3333" Fill="#FFF4F4F5" Height="3" Stretch="Fill" Stroke="White" StrokeThickness="3" UseLayoutRounding="False" VerticalAlignment="Top" Grid.Row="1"/>
+		</Grid>
+
+		<TextBlock Grid.Column="1" Margin="0,60,0,0" TextWrapping="Wrap" FontSize="96" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Temperature}" VerticalAlignment="Top" Grid.Row="1"/>
+		<TextBlock Grid.Column="2" Margin="0,60,0,0" TextWrapping="Wrap" Text="°" FontSize="96" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" Grid.Row="1"/>
+		<TextBlock HorizontalAlignment="Right" Margin="0,60,0,0" TextWrapping="Wrap" Text="{Binding Sign, Mode=OneWay}" VerticalAlignment="Top" FontSize="96" Grid.Row="1"/>
+		<TextBlock HorizontalAlignment="Center" Margin="0,24,0,0" TextWrapping="Wrap" Text="СЕЙЧАС" VerticalAlignment="Top" FontSize="20" Grid.Row="2" Grid.ColumnSpan="3"/>
+        <oxy:PlotView x:Name="plotView" Model="{Binding PlotModel}" Grid.ColumnSpan="3" Grid.Row="3" VerticalAlignment="Top" Margin="0,24,0,0" Height="250" Background="#00000000" d:IsHidden="True">
+        	<oxy:PlotView.RenderTransform>
+        		<CompositeTransform/>
+        	</oxy:PlotView.RenderTransform>
+        </oxy:PlotView>
+        <ItemsControl Grid.ColumnSpan="3" Grid.Row="3" Margin="32,0"></ItemsControl>
         
-    </Grid>
+	</Grid>
 </Page>

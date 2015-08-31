@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Windows.UI.Xaml;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using WeatherNsuUniversal.Common;
+using WeatherNsuUniversal.Common.Extensions;
+
 
 namespace WeatherNsuUniversal.ViewModels
 {
@@ -21,6 +28,17 @@ namespace WeatherNsuUniversal.ViewModels
             set
             {
                 _temperature = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private PlotModel _plotModel;
+        public PlotModel PlotModel
+        {
+            get { return _plotModel; }
+            set
+            {
+                _plotModel = value;
                 OnPropertyChanged();
             }
         }
@@ -105,7 +123,8 @@ namespace WeatherNsuUniversal.ViewModels
             try
             {
                 var weatherData = await DataLoader.LoadTemperatureWithGraph();
-                Temperature = (int) Math.Round(weatherData.Current, 0);
+                Temperature = (int)Math.Round(weatherData.Current, 0);
+                PlotModel = GeneratePlotModel(weatherData.Graphic.TemperatureList);
 
                 UpdateTime = DateTime.Now;
                 IsLoad = true;
@@ -124,6 +143,52 @@ namespace WeatherNsuUniversal.ViewModels
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private PlotModel GeneratePlotModel(IList<Temperature> temperatureList)
+        {
+            var model = new PlotModel();
+            model.Axes.Add(new DateTimeAxis
+            {
+                TickStyle = TickStyle.Inside,
+                //MajorGridlineStyle = LineStyle.Dash,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                StringFormat = "d-MMM",
+                IsAxisVisible = false
+            });
+            model.Axes.Add(new LinearAxis
+            {
+                TickStyle = TickStyle.Inside,
+                //MajorGridlineStyle = LineStyle.Dash,
+                IsZoomEnabled = false,
+                IsPanEnabled = false,
+                StringFormat = "0°",
+                FontSize = 20,
+                IsAxisVisible = false
+            });
+            model.PlotAreaBorderColor = OxyColors.Transparent;
+            var areaSeries = new AreaSeries();
+
+            for (int i = temperatureList.Count - 1; i >= 0; i -= 10)
+            {
+                areaSeries.Points.Add(new DataPoint
+                {
+                    X = DateTimeAxis.ToDouble(temperatureList[i].Timestamp.FromUnixEpochToDateTime()),
+                    Y = (int)Math.Round(temperatureList[i].Value, 0)
+                });
+
+            }
+
+            areaSeries.Color = OxyColors.White;
+            areaSeries.StrokeThickness = 3;
+            areaSeries.Fill = OxyColors.Transparent;
+            
+
+            model.Series.Add(areaSeries);
+            return model;
+        }
+
+
     }
 
     public class UpdateTemperatureCommand : ICommand
