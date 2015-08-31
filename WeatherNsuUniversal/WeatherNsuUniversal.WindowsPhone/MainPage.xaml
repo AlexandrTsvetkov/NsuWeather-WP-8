@@ -105,9 +105,9 @@
 			<Path x:Name="path" Data="M70,98.3333 L110,98.3333" Fill="#FFF4F4F5" Height="3" Stretch="Fill" Stroke="White" StrokeThickness="3" UseLayoutRounding="False" VerticalAlignment="Top" Grid.Row="1"/>
 		</Grid>
 
-		<TextBlock Grid.Column="1" Margin="0,60,0,0" TextWrapping="Wrap" FontSize="96" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Temperature}" VerticalAlignment="Top" Grid.Row="1"/>
-		<TextBlock Grid.Column="2" Margin="0,60,0,0" TextWrapping="Wrap" Text="°" FontSize="96" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" Grid.Row="1"/>
-		<TextBlock HorizontalAlignment="Right" Margin="0,60,0,0" TextWrapping="Wrap" Text="{Binding Sign, Mode=OneWay}" VerticalAlignment="Top" FontSize="96" Grid.Row="1"/>
+		<TextBlock Grid.Column="1" Margin="0,60,0,0" TextWrapping="Wrap" FontSize="96" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Temperature}" VerticalAlignment="Top" Grid.Row="1" Height="95"/>
+		<TextBlock Grid.Column="2" Margin="0,60,0,0" TextWrapping="Wrap" Text="°" FontSize="96" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" Grid.Row="1" Height="95"/>
+		<TextBlock HorizontalAlignment="Right" Margin="0,60,0,0" TextWrapping="Wrap" Text="{Binding Sign, Mode=OneWay}" VerticalAlignment="Top" FontSize="96" Grid.Row="1" Height="95"/>
 		<TextBlock HorizontalAlignment="Center" Margin="0,24,0,0" TextWrapping="Wrap" Text="СЕЙЧАС" VerticalAlignment="Top" FontSize="20" Grid.Row="2" Grid.ColumnSpan="3"/>
         <oxy:PlotView x:Name="plotView" Model="{Binding PlotModel}" Grid.ColumnSpan="3" Grid.Row="3" VerticalAlignment="Top" Margin="0,24,0,0" Height="250" Background="#00000000" d:IsHidden="True">
         	<oxy:PlotView.RenderTransform>
