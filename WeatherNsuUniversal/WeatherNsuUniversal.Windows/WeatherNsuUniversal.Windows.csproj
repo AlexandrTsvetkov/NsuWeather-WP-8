@@ -139,12 +139,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="OxyPlot, Version=2015.1.690.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OxyPlot.Core.2015.1.690-alpha\lib\portable-net4+sl4+wp71+win8+wpa81\OxyPlot.dll</HintPath>
+    <Reference Include="OxyPlot, Version=2015.1.1000.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OxyPlot.Core.2015.1.1000-alpha\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OxyPlot.WindowsUniversal, Version=2015.1.690.0, Culture=neutral, PublicKeyToken=8db7042d1d71c4e0, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OxyPlot.WindowsUniversal.2015.1.690-alpha\lib\portable-windows8+wpa81\OxyPlot.WindowsUniversal\OxyPlot.WindowsUniversal.dll</HintPath>
+    <Reference Include="OxyPlot.Windows, Version=2015.1.1000.0, Culture=neutral, PublicKeyToken=8db7042d1d71c4e0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OxyPlot.Windows.2015.1.1000-alpha\lib\portable-windows8+wpa81\OxyPlot.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
