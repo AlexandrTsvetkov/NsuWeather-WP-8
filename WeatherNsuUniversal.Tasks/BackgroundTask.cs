@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Xml;
+using System.Xml.Linq;
 using Windows.ApplicationModel.Background;
+using Windows.Data.Xml.Dom;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -85,22 +90,22 @@ namespace WeatherNsuUniversal.Tasks
     //        }
     //    }
 
-    //    public void UpdateMainTile()
-    //    {
-    //        var mainTile = ShellTile.ActiveTiles.FirstOrDefault();
+        //public void UpdateMainTile()
+        //{
+        //    var mainTile = ShellTile.ActiveTiles.FirstOrDefault();
 
-    //        if (mainTile != null)
-    //        {
-    //            FlipTileData tileData = new FlipTileData
-    //            {
-    //                BackgroundImage = new Uri("isostore:/Shared/ShellContent/tile.jpg", UriKind.Absolute),
-    //                WideBackgroundImage = new Uri("isostore:/Shared/ShellContent/tileWide.jpg", UriKind.Absolute),
-    //                SmallBackgroundImage = new Uri("isostore:/Shared/ShellContent/tileSmall.jpg", UriKind.Absolute)
-    //            };
+        //    if (mainTile != null)
+        //    {
+        //        FlipTileData tileData = new FlipTileData
+        //        {
+        //            BackgroundImage = new Uri("isostore:/Shared/ShellContent/tile.jpg", UriKind.Absolute),
+        //            WideBackgroundImage = new Uri("isostore:/Shared/ShellContent/tileWide.jpg", UriKind.Absolute),
+        //            SmallBackgroundImage = new Uri("isostore:/Shared/ShellContent/tileSmall.jpg", UriKind.Absolute)
+        //        };
 
-    //            mainTile.Update(tileData);
-    //        }
-    //    }
+        //        mainTile.Update(tileData);
+        //    }
+        //}
 
     //    public void ResetMainTitle()
     //    {
@@ -112,4 +117,25 @@ namespace WeatherNsuUniversal.Tasks
     //        }
     //    }
     //}
+
+    public sealed class DownloadTemperatureBackgroundTask : IBackgroundTask
+    {
+        public async void Run(IBackgroundTaskInstance taskInstance)
+        {
+            BackgroundTaskDeferral deferral = taskInstance.GetDeferral();
+
+            var updater = TileUpdateManager.CreateTileUpdaterForApplication();
+            var tileXml = TileUpdateManager.GetTemplateContent(TileTemplateType.TileSquare150x150Text01);
+
+            tileXml.GetElementsByTagName("text")[0].InnerText = DateTime.Now.ToLocalTime().ToString();
+            updater.Update(new TileNotification(tileXml));
+
+
+
+
+
+
+            deferral.Complete();
+        }
+    }
 }

@@ -108,6 +108,10 @@
       <Project>{26f0545b-907c-4f7f-bf1f-79093da111de}</Project>
       <Name>WeatherNsuUniversal.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WeatherNsuUniversal.Tasks\WeatherNsuUniversal.Tasks.csproj">
+      <Project>{eafc055f-9983-4f7a-8e50-c0b8f3acb0b9}</Project>
+      <Name>WeatherNsuUniversal.Tasks</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainPage.xaml.cs">

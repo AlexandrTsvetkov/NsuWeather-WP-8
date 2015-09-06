@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Windows.UI.Input;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -41,6 +45,29 @@ namespace WeatherNsuUniversal.ViewModels
                 _plotModel = value;
                 OnPropertyChanged();
             }
+        }
+
+        private ObservableCollection<ForecastViewModel> _forecastCollection;
+        public ObservableCollection<ForecastViewModel> ForecastCollection
+        {
+            get { return _forecastCollection; }
+        }
+
+        public void ManipulationStarted(ManipulationStartedRoutedEventArgs e)
+        {
+            //TODO: Handler manipulation started event here
+        }
+
+        public void ManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
+        {
+            //TODO: Handler manipulation completed event here
+        }
+
+        private ManipulationCommand _manipulationCommand;
+
+        public ManipulationCommand ManipulationCommand
+        {
+            get { return _manipulationCommand; }
         }
 
         private DateTime _updateTime;
@@ -104,14 +131,16 @@ namespace WeatherNsuUniversal.ViewModels
             }
         }
 
-        private UpdateTemperatureCommand _updateTemperatureCommand;
-        public UpdateTemperatureCommand UpdateCommand
+        private ButtonClickCommand _updateTemperatureCommand;
+        public ButtonClickCommand UpdateTemperatureCommand
         {
-            get { return _updateTemperatureCommand ?? (_updateTemperatureCommand = new UpdateTemperatureCommand(UpdateTemperature)); }
+            get { return _updateTemperatureCommand ?? (_updateTemperatureCommand = new ButtonClickCommand(UpdateTemperature)); }
         }
 
         public TemperatureViewModel()
         {
+            _manipulationCommand = new ManipulationCommand(ManipulationStarted, ManipulationCompleted);
+
             UpdateTemperature();
         }
 
@@ -187,17 +216,15 @@ namespace WeatherNsuUniversal.ViewModels
             model.Series.Add(areaSeries);
             return model;
         }
-
-
     }
 
-    public class UpdateTemperatureCommand : ICommand
+    public class ButtonClickCommand : ICommand
     {
-        private Action execute;
+        private Action _execute;
 
-        public UpdateTemperatureCommand(Action execute)
+        public ButtonClickCommand(Action execute)
         {
-            this.execute = execute;
+            _execute = execute;
         }
 
         public bool CanExecute(object parameter)
@@ -207,16 +234,46 @@ namespace WeatherNsuUniversal.ViewModels
 
         public void Execute(object parameter)
         {
-            execute();
+            _execute();
         }
 
         public event EventHandler CanExecuteChanged;
     }
 
-    public class GraphicModel
+    public class ManipulationCommand : ICommand
     {
-        public DateTime Time { get; set; }
+        private Action<ManipulationStartedRoutedEventArgs> _executeStarted;
+        private Action<ManipulationCompletedRoutedEventArgs> _executeCompleted;
 
-        public int Value { get; set; }
+        public ManipulationCommand(Action<ManipulationStartedRoutedEventArgs> started,
+            Action<ManipulationCompletedRoutedEventArgs> completed)
+        {
+            _executeStarted = started;
+            _executeCompleted = completed;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            if (parameter is ManipulationStartedRoutedEventArgs)
+                _executeStarted((ManipulationStartedRoutedEventArgs) parameter);
+            else if (parameter is ManipulationCompletedRoutedEventArgs)
+                _executeCompleted((ManipulationCompletedRoutedEventArgs)parameter);
+        }
+
+        public event EventHandler CanExecuteChanged;
+    }
+
+    public class ForecastViewModel
+    {
+        public string WeekDay { get; set; }
+
+        public string DayTemperature { get; set; }
+
+        public string NightTemperature { get; set; }
     }
 }

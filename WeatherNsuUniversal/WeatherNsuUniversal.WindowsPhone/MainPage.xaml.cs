@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Security.Cryptography.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -12,8 +15,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+using Microsoft.Xaml.Interactions.Core;
+using WeatherNsuUniversal.Tasks;
 
 namespace WeatherNsuUniversal
 {
@@ -22,8 +25,7 @@ namespace WeatherNsuUniversal
     /// </summary>
     public partial class MainPage : Page
     {
-        private const string PeriodicTaskName = "LiveTileUpdater";
-        private const string TaskDescription = "NSU weather LiveTile agent";
+        private const string TaskName = "WeatherNsuLiveTileUpdater";
 
         public MainPage()
         {
@@ -33,40 +35,77 @@ namespace WeatherNsuUniversal
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            //StartPeriodicAgent();
+            RegisterBackgroundTask();
         }
 
-        //private void StartPeriodicAgent()
-        //{
-        //    try
-        //    {
-        //        var periodicTask = ScheduledActionService.Find(PeriodicTaskName) as PeriodicTask;
+        private void RegisterBackgroundTask()
+        {
+            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            {
+                if (task.Value.Name == TaskName)
+                    return;
+            }
 
-        //        if (periodicTask != null)
-        //            ScheduledActionService.Remove(PeriodicTaskName);
 
-        //        periodicTask = new PeriodicTask(PeriodicTaskName) { Description = TaskDescription };
+            var builder = new BackgroundTaskBuilder();
+            builder.Name = TaskName;
+            builder.TaskEntryPoint = typeof (DownloadTemperatureBackgroundTask).ToString();
+            builder.SetTrigger(new TimeTrigger(15, false));
 
-        //        ScheduledActionService.Add(periodicTask);
-        //    }
-        //    catch
-        //    { }
-        //}
+            try
+            {
+#if WINDOWS_PHONE_APP
+                BackgroundExecutionManager.RequestAccessAsync();
+#endif
 
-        // Sample code for building a localized ApplicationBar
-        //private void BuildLocalizedApplicationBar()
-        //{
-        //    // Set the page's ApplicationBar to a new instance of ApplicationBar.
-        //    ApplicationBar = new ApplicationBar();
+                builder.Register();
+            }
+            catch
+            {
+                //TODO: Handle exception of background registration
+            }
+        }
 
-        //    // Create a new button and set the text value to the localized string from AppResources.
-        //    ApplicationBarIconButton appBarButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/appbar.add.rest.png", UriKind.Relative));
-        //    appBarButton.Text = AppResources.AppBarButtonText;
-        //    ApplicationBar.Buttons.Add(appBarButton);
+        private double _startedPosition;
+        private double _completedPosition;
 
-        //    // Create a new menu item with the localized string from AppResources.
-        //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
-        //    ApplicationBar.MenuItems.Add(appBarMenuItem);
-        //}
+        private CompositeTransform _plotViewCompositeTransform;
+        private CompositeTransform _forecastCompositeTransform;
+
+        private void Page_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            _startedPosition = e.Position.X;
+
+            _plotViewCompositeTransform = plotView.RenderTransform as CompositeTransform;
+            _forecastCompositeTransform = ForecastControl.RenderTransform as CompositeTransform;
+        }
+
+        private void Page_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        {
+            _completedPosition = e.Position.X;
+
+            if (_startedPosition > _completedPosition)
+                VisualStateManager.GoToState(this, ChartState.Name, true);
+            else if (_startedPosition < _completedPosition)
+                VisualStateManager.GoToState(this, ForecastState.Name, true);
+        }
+
+        private void Page_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if (VisualStateGroup.CurrentState == ForecastState)
+            {
+                if (e.Delta.Translation.X > 0)
+                    return;
+            }
+
+            if (VisualStateGroup.CurrentState == ChartState)
+            {
+                if (e.Delta.Translation.X < 0)
+                    return;
+            }
+
+            _plotViewCompositeTransform.TranslateX += e.Delta.Translation.X;
+            _forecastCompositeTransform.TranslateX += e.Delta.Translation.X;
+        }
     }
 }

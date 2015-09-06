@@ -9,8 +9,22 @@
     <FontFamily x:Key="MainApplicationFont">/Fonts/Code-Pro-LC.otf#Code Pro LC</FontFamily>
     
     <Style TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource MainApplicationFont}"></Setter>
-        <Setter Property="Foreground" Value="White"></Setter>
+        <Setter Property="FontFamily" Value="{StaticResource MainApplicationFont}"/>
+        <Setter Property="Foreground" Value="White"/>
     </Style>
+
+    <DataTemplate x:Key="ForecastDataTemplate">
+    	<Grid Margin="0,0,0,5">
+            <Grid.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontFamily" Value="{StaticResource MainApplicationFont}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Style>
+            </Grid.Resources>
+            <TextBlock Text="{Binding WeekDay}" FontSize="28" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBlock Text="{Binding DayTemperature}" FontSize="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,35,0"/>
+            <TextBlock Text="{Binding NightTemperature}" FontSize="15" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Bottom" Foreground="#B2FFFFFF"/>
+        </Grid>    
+    </DataTemplate>
 
 </ResourceDictionary>
