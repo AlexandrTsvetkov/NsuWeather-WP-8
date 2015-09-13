@@ -3,19 +3,20 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using WeatherNsuUniversal.Common.Models;
 
 namespace WeatherNsuUniversal.Common
 {
-    public class DataLoader
+    public class DataLoader : IDataLoader
     {
         private const string NsuWeatherUrl = "http://weather.nsu.ru/weather_brief.xml";
         private const string NsuWeatherUrlWithGraph = "http://weather.nsu.ru/weather.xml";
 
-        private static readonly Random RandomKey = new Random();
+        private readonly Random RandomKey = new Random();
 
-        private static readonly XmlReaderSettings Setting = new XmlReaderSettings {DtdProcessing = DtdProcessing.Ignore};
+        private readonly XmlReaderSettings Setting = new XmlReaderSettings {DtdProcessing = DtdProcessing.Ignore};
 
-        private static async Task<Weather> LoadData(string url)
+        private async Task<Weather> LoadData(string url)
         {
             HttpWebRequest webRequest =
                 (HttpWebRequest) WebRequest.Create(string.Format("{0}?{1}", url, RandomKey.Next()));
@@ -31,14 +32,20 @@ namespace WeatherNsuUniversal.Common
             return weather;
         }
 
-        public static async Task<Weather> LoadTemperature()
+        public async Task<Weather> LoadTemperature()
         {
             return await LoadData(NsuWeatherUrl);
         }
 
-        public static async Task<Weather> LoadTemperatureWithGraph()
+        public async Task<Weather> LoadTemperatureWithGraph()
         {
             return await LoadData(NsuWeatherUrlWithGraph);
-        }   
+        }
+
+        public Task<Forecast> LoadForecast()
+        {
+            //TODO: Impelement loading forecast data
+            return null;
+        }
     }
 }

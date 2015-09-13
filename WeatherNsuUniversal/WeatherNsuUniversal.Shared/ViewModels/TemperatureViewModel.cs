@@ -14,12 +14,15 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using WeatherNsuUniversal.Common;
 using WeatherNsuUniversal.Common.Extensions;
+using WeatherNsuUniversal.Common.Models;
 
 
 namespace WeatherNsuUniversal.ViewModels
 {
     public class TemperatureViewModel : INotifyPropertyChanged
     {
+        private IDataLoader _dataLoaderService;
+
         public string Sign
         {
             get { return _temperature < 0 ? "–" : string.Empty; }
@@ -140,20 +143,44 @@ namespace WeatherNsuUniversal.ViewModels
         public TemperatureViewModel()
         {
             _manipulationCommand = new ManipulationCommand(ManipulationStarted, ManipulationCompleted);
+            _dataLoaderService = new DataLoader();
 
             UpdateTemperature();
         }
 
         public async void UpdateTemperature()
         {
+            _forecastCollection = new ObservableCollection<ForecastViewModel>();
+
             IsError = false;
             IsLoad = false;
 
             try
             {
-                var weatherData = await DataLoader.LoadTemperatureWithGraph();
-                Temperature = (int)Math.Round(weatherData.Current, 0);
+                var weatherData = await _dataLoaderService.LoadTemperatureWithGraph();
+                Temperature = (int) Math.Round(weatherData.Current, 0);
                 PlotModel = GeneratePlotModel(weatherData.Graphic.TemperatureList);
+
+                var forecastDara = await _dataLoaderService.LoadForecast();
+                if (forecastDara == null)
+                    return;
+                for (int i = 0; i < 4; i++)
+                {
+                    ForecastViewModel fvm = new ForecastViewModel();
+                    if (i == 0)
+                        fvm.WeekDay = "завтра".ToUpper();
+                    else if (i == 1)
+                        fvm.WeekDay = "послезавтра".ToUpper();
+                    else
+                        fvm.WeekDay =
+                            forecastDara.DailyForecasts[i].Timestamp.FromUnixEpochToDateTime()
+                                .ToString("dddd")
+                                .ToUpper();
+
+                    fvm.DayTemperature = string.Format("{0}°", (int) Math.Round(forecastDara.DailyForecasts[i].DayTemperature, 0));
+                    fvm.NightTemperature = string.Format("{0}°", (int) Math.Round(forecastDara.DailyForecasts[i].NightTemperature, 0));
+                    _forecastCollection.Add(fvm);
+                }
 
                 UpdateTime = DateTime.Now;
                 IsLoad = true;
@@ -203,7 +230,7 @@ namespace WeatherNsuUniversal.ViewModels
                 areaSeries.Points.Add(new DataPoint
                 {
                     X = DateTimeAxis.ToDouble(temperatureList[i].Timestamp.FromUnixEpochToDateTime()),
-                    Y = (int)Math.Round(temperatureList[i].Value, 0)
+                    Y = (int) Math.Round(temperatureList[i].Value, 0)
                 });
 
             }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace WeatherNsuUniversal.Common
+namespace WeatherNsuUniversal.Common.Models
 {
     [XmlRoot("weather")]
     public class Weather
