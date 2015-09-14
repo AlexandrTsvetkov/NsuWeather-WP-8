@@ -15,7 +15,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Microsoft.Xaml.Interactions.Core;
 using WeatherNsuUniversal.Tasks;
 
 namespace WeatherNsuUniversal
@@ -94,13 +93,13 @@ namespace WeatherNsuUniversal
         {
             if (VisualStateGroup.CurrentState == ForecastState)
             {
-                if (e.Delta.Translation.X > 0)
+                if (_forecastCompositeTransform.TranslateX + e.Delta.Translation.X > 0)
                     return;
             }
 
             if (VisualStateGroup.CurrentState == ChartState)
             {
-                if (e.Delta.Translation.X < 0)
+                if (_plotViewCompositeTransform.TranslateX + e.Delta.Translation.X < 0)
                     return;
             }
 
