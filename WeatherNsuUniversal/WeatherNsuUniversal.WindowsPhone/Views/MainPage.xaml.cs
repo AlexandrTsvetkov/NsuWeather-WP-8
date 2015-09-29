@@ -34,7 +34,7 @@ namespace WeatherNsuUniversal
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            RegisterBackgroundTask();
+            //RegisterBackgroundTask();
         }
 
         private void RegisterBackgroundTask()
@@ -42,9 +42,11 @@ namespace WeatherNsuUniversal
             foreach (var task in BackgroundTaskRegistration.AllTasks)
             {
                 if (task.Value.Name == TaskName)
+                {
+                    //task.Value.Unregister(false);
                     return;
+                }
             }
-
 
             var builder = new BackgroundTaskBuilder();
             builder.Name = TaskName;

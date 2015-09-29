@@ -6,11 +6,12 @@
 
     <Color x:Key="MainApplicationColor">#299546</Color>
     <SolidColorBrush x:Key="MainApplicationColorBrush" Color="{StaticResource MainApplicationColor}"/>
+    <SolidColorBrush x:Key="SecondaryApplicationColorBrush" Color="White"/>
     <FontFamily x:Key="MainApplicationFont">/Fonts/Code-Pro-LC.otf#Code Pro LC</FontFamily>
     
     <Style TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource MainApplicationFont}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource SecondaryApplicationColorBrush}"/>
     </Style>
 
     <DataTemplate x:Key="ForecastDataTemplate">
