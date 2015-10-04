@@ -2,14 +2,18 @@
     x:Class="WeatherNsuUniversal.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:WeatherNsuUniversal">
+    xmlns:local="using:WeatherNsuUniversal"
+    xmlns:conv="using:WeatherNsuUniversal.Converters">
     
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ApplicationResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <conv:NegativeConverter x:Key="NegativeConverter"/>
         </ResourceDictionary>
+
     </Application.Resources>
 
 </Application>

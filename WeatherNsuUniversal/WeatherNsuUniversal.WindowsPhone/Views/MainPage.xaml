@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ViewModels="using:WeatherNsuUniversal.ViewModels"
+    xmlns:conv="using:WeatherNsuUniversal.Converters"
     xmlns:oxy="using:OxyPlot.Windows"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
@@ -74,7 +75,7 @@
                                 <SineEase EasingMode="EaseOut"/>
                             </DoubleAnimation.EasingFunction>
 						</DoubleAnimation>
-						<DoubleAnimation Duration="0:0:0.2" To="-400" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="ForecastControl" d:IsOptimized="True">
+                        <DoubleAnimation Duration="0:0:0.2" To="{Binding ActualWidth, ElementName=grid, Converter={StaticResource NegativeConverter}}" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="ForecastControl" d:IsOptimized="True">
                             <DoubleAnimation.EasingFunction>
                                 <SineEase EasingMode="EaseOut"/>
                             </DoubleAnimation.EasingFunction>
