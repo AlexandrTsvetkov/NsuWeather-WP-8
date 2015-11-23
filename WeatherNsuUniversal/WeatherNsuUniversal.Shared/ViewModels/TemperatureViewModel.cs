@@ -36,6 +36,7 @@ namespace WeatherNsuUniversal.ViewModels
             {
                 _temperature = value;
                 OnPropertyChanged();
+				OnPropertyChanged("Sign");
             }
         }
 
